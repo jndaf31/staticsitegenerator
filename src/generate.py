@@ -1,10 +1,16 @@
 import os
 import shutil
-from htmlnode import HTMLNode
 from splitblocks import markdown_to_html_node
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    for index in os.listdir(dir_path_content):
+        if os.path.isfile(os.path.join(dir_path_content, index)):
+            generate_page(os.path.join(dir_path_content, index),template_path,os.path.join(dest_dir_path,index))
+        else:
+            generate_pages_recursive(os.path.join(dir_path_content, index),template_path,os.path.join(dest_dir_path,index))
+
 def generate_page(from_path: str, template_path: str, dest_path: str):
-    print(f'Generating page from {from_path} to {dest_path} using {template_path}...')
+    print(f'Generating page from {from_path} to {dest_path.replace('.md','.html')} using {template_path}...')
 
     markdown_f = open(from_path,'r')
     markdown = markdown_f.read()
@@ -23,7 +29,7 @@ def generate_page(from_path: str, template_path: str, dest_path: str):
     if not os.path.exists(os.path.dirname(dest_path)):
         os.makedirs(os.path.dirname(dest_path))
 
-    page_f = open(dest_path,'w')
+    page_f = open(dest_path.replace('.md','.html'),'w')
     page_f.write(page)
     page_f.close()
     
