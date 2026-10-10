@@ -2,6 +2,16 @@ from textnode import TextNode, TextType
 from enum import Enum
 import re
 
+def text_to_textnodes(text: str) -> list[TextNode]:
+    text_nodes = [TextNode(text,TextType.PLAIN)]
+
+    text_nodes = split_nodes_delimiter(text_nodes,'**',TextType.BOLD)
+    text_nodes = split_nodes_delimiter(text_nodes,'_',TextType.ITALIC)
+    text_nodes = split_nodes_delimiter(text_nodes,'`',TextType.CODE)
+    text_nodes = split_nodes_image(text_nodes)
+    text_nodes = split_nodes_link(text_nodes)
+
+    return text_nodes
 
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type: TextType) -> list[TextNode]:
     new_nodes = []
@@ -86,15 +96,4 @@ def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
         if (remaining_text):
             new_nodes.append(TextNode(remaining_text,TextType.PLAIN))
         
-    return new_nodes
-
-def text_to_textnodes(text: str) -> list[TextNode]:
-    text_nodes = [TextNode(text,TextType.PLAIN)]
-
-    text_nodes = split_nodes_delimiter(text_nodes,'**',TextType.BOLD)
-    text_nodes = split_nodes_delimiter(text_nodes,'_',TextType.ITALIC)
-    text_nodes = split_nodes_delimiter(text_nodes,'`',TextType.CODE)
-    text_nodes = split_nodes_image(text_nodes)
-    text_nodes = split_nodes_link(text_nodes)
-
-    return text_nodes                  
+    return new_nodes               
