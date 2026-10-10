@@ -6,8 +6,8 @@ import os
 
 def main():
     basepath = '/'
-    if sys.argv[0]:
-        basepath = sys.argv[0]
+    if len(sys.argv)>0 and sys.argv[1]:
+        basepath = sys.argv[1]
 
     
     regen_dir('static','docs')
