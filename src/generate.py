@@ -1,5 +1,44 @@
 import os
 import shutil
+from htmlnode import HTMLNode
+from splitblocks import markdown_to_html_node
+
+def generate_page(from_path: str, template_path: str, dest_path: str):
+    print(f'Generating page from {from_path} to {dest_path} using {template_path}...')
+
+    markdown_f = open(from_path,'r')
+    markdown = markdown_f.read()
+    markdown_f.close()
+
+    template_f = open(template_path,'r')
+    template = template_f.read()
+    template_f.close()
+
+    html_content = markdown_to_html_node(markdown).to_html()
+
+    page_title = extract_title(markdown)
+
+    page = template.replace('{{ Title }}', page_title).replace('{{ Content }}',html_content)
+
+    if not os.path.exists(os.path.dirname(dest_path)):
+        os.makedirs(os.path.dirname(dest_path))
+
+    page_f = open(dest_path,'w')
+    page_f.write(page)
+    page_f.close()
+    
+
+    
+
+def extract_title(markdown: str) -> str:
+    lines = markdown.split('\n')
+    title = ''
+
+    for l in lines:
+        if l.startswith('# '):
+            title = l[2:].strip()
+            return title
+    raise Exception('No h1 header.')
 
 def regen_dir(src: str, dst: str):
         if os.path.exists(dst):
